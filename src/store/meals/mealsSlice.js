@@ -12,22 +12,38 @@ const initialState = {
   isLoading: false,
   error: "",
 }
+
 export const mealsSlices = createSlice({
   name: "meals",
   initialState,
-  reducers: {},
+  reducers: {
+    getMealsStarted(state,action){
+      state.isLoading=true;
+    },
+    getMealsSuccess(state,action){
+      state.meals = action.payload;
+      state.isLoading = false;
+      state.error="";
+    },
+    getMealsFailed(state,action){
+      state.isLoading=false;
+      state.error = action.payload;
+    }
+  },
   extraReducers: (builder) => {
     builder.addCase(getMeals.fulfilled, (state, action) => {
       state.meals = action.payload
       state.isLoading = false
       state.error = ""
     })
-    builder.addCase(getMeals.pending, (state) => {
-      state.isLoading = true
+    builder.addCase(getMeals.pending, (state,action) => {
+      state.isLoading = true;
+      state.error = action.payload;
     })
     builder.addCase(getMeals.rejected, (state, action) => {
       state.isLoading = false
-      state.error = action.payload
+      state.error = action.payload;
+      state.meals = action.payload;
     })
   },
 })
